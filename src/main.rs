@@ -30,7 +30,7 @@ async fn main() -> std::io::Result< () >
 {
 
   let query = r#"
-  SELECT ?countryLabel (COUNT(?city) AS ?count) (MAX(?countryPop) AS ?totalPopulation) (MAX(?area) AS ?totalArea) WHERE {
+  SELECT ?countryLabel (COUNT(DISTINCT ?city) AS ?count) (MAX(?countryPop) AS ?totalPopulation) (MAX(?area) AS ?totalArea) WHERE {
     ?city wdt:P31/wdt:P279* wd:Q515.   # отримати всі міста
     ?city wdt:P1082 ?population.       # отримати населення міста
     ?city wdt:P17 ?country.            # отримати країну, до якої належить місто
@@ -63,7 +63,7 @@ async fn main() -> std::io::Result< () >
     let count = row[ "count" ].as_object().unwrap()[ "value" ].as_str().unwrap();
     let country_label = row[ "countryLabel" ].as_object().unwrap()[ "value" ].as_str().unwrap();
     let total_area = row[ "totalArea" ].as_object().unwrap()[ "value" ].as_str().unwrap();
-    let total_population = row[ "totalPopulation" ].as_object().unwrap()[ "value" ].as_str().unwrap();
+    let total_population = row[ "totalPopulation" ].as_object().unwrap()[ "value" ].as_str().unwrap().parse::<f64>().unwrap();
 
     ( country_label, count, total_area, total_population )
 
@@ -76,8 +76,8 @@ async fn main() -> std::io::Result< () >
 
   for ( country_label, count, total_area, total_population ) in result 
   {
-    table.add_row( row![ country_label, count, total_population, total_area ] );
-    wtr.write_record( &[ country_label, count, total_population, total_area ] )?;
+    table.add_row( row![ country_label, count, (total_population / 1000.0).to_string() + " mln", total_area.to_string() + " sq km" ] );
+    wtr.write_record( &[ country_label, count, &( total_population / 1000.0 ).to_string(), total_area ] )?;
   }
 
   wtr.flush()?;
