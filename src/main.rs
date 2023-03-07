@@ -71,13 +71,13 @@ async fn main() -> std::io::Result< () >
   ).collect::< Vec< _ > >();
 
   // Add a row per time
-  table.add_row( row![ "Country name", "Big cities number", "Population", "Area" ] );
+  table.add_row( row![ "Country name", "Big cities number", "Population, mln", "Area, sq km" ] );
   let mut wtr = Writer::from_path( "result.csv" )?;
 
   for ( country_label, count, total_area, total_population ) in result 
   {
-    table.add_row( row![ country_label, count, (total_population / 1000.0).to_string() + " mln", total_area.to_string() + " sq km" ] );
-    wtr.write_record( &[ country_label, count, &( total_population / 1000.0 ).to_string(), total_area ] )?;
+    table.add_row( row![ country_label, count, ( ( total_population / 1000.0 ) as i64 ).to_string(), total_area.to_string() ] );
+    wtr.write_record( &[ country_label, count, &( ( total_population / 1000.0 ) as i64 ).to_string(), total_area ] )?;
   }
 
   wtr.flush()?;
