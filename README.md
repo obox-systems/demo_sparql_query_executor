@@ -3,8 +3,7 @@
 ## Abstract
 In this project, I developed a SPARQL query executor that uses WikiData to find needed information in Rust. It takes a SPARQL query and returns its result in a table view. This program also stores SPARQL query result in CSV file.
 
-I used a `mediawiki` crate for connecting with Wikibase API and for executing a query. 
-I also used `prettytable` crate for creating a table to display the query result and for creating a CSV file, where the quewy result is stored.
+I used a `MediaWiki` crate to connect with Wikibase API and execute a query. I also used a `prettytable` crate to create a table to display the query result and a CSV file, where the query result is stored.
 
 ## How to run
 
